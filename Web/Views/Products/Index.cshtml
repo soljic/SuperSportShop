@@ -1,0 +1,136 @@
+﻿@model List<Web.Models.ProductViewModel>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Lumen Example</title>
+    <!-- Bootstrap CSS -->
+    <!-- Ovdje dodajte referencu na jQuery -->
+  <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+  <script src="~/Scripts/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="pt-5">
+<button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("ExportToExcel", "Products")'">Izvezi u Excel</button>
+  <!-- Modal -->
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+  </button>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>User ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Id</td>
+                <td>@product.Name</td>
+                <td>@product.Category</td>
+                <td>@product.Price</td>
+                <td>@product.UserId</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+<!-- Modal -->
+ <div class="modal" id="exampleModal">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title">Dodaj novi proizvod</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+         <form id="addProductForm" enctype="multipart/form-data">
+           <div class="mb-3">
+             <label for="productName" class="form-label">Naziv</label>
+             <input type="text" class="form-control" id="productName">
+           </div>
+           <div class="mb-3">
+             <label for="productCategory" class="form-label">Kategorija</label>
+             <input type="text" class="form-control" id="productCategory">
+           </div>
+           <div class="mb-3">
+             <label for="productPrice" class="form-label">Cijena</label>
+             <input type="text" class="form-control" id="productPrice">
+           </div>
+           <div class="mb-3">
+             <label for="productPicture" class="form-label">Slika</label>
+             <input type="file" enctype="multipart/form-data" multiple="multiple" class="form-control-file" id="productPicture" name="Picture">
+           </div>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-primary" id="saveProduct" data-dismiss="modal">Spremi</button>
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+       </div>
+     </div>
+   </div>
+ </div>
+  </div>
+<script>
+$(document).ready(function () {
+  $('#saveProduct').click(function () {
+    var productName = $('#productName').val();
+    var productCategory = $('#productCategory').val();
+    var productPrice = $('#productPrice').val();
+    
+      
+     var fileUpload = $("#productPicture").get(0);  
+    var productPicture = fileUpload.files; 
+
+    var formData = new FormData();
+    var totalFiles = fileUpload.files.length;
+    for (var i = 0; i < totalFiles; i++) {
+      formData.append("picture", productPicture[i]);
+    } 
+    
+    formData.append('name', productName);
+    formData.append('category', productCategory);
+    formData.append('price', productPrice);
+    
+    for (var pair of formData.entries()) {
+        console.log(pair[0]+ ', ' + pair[1]);  
+    }
+
+
+    $.ajax({
+      type: 'POST',
+      url: '/products/Add',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        var newRow = "<tr>" +
+          "<td>" + response.Id + "</td>" +
+          "<td>" + response.Name + "</td>" +
+          "<td>" + response.Category + "</td>" +
+          "<td>" + response.Price + "</td>" +
+          "<td>" + response.UserId + "</td>" +
+          "</tr>";
+        $("table tbody").append(newRow);
+        $('#exampleModal').modal('hide');
+      },
+      error: function () {
+        // Obrada grešaka ako se dogodi greška tijekom AJAX poziva
+      }
+    });
+  });
+});
+</script>
+
+
+
+</body>

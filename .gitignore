@@ -1,0 +1,61 @@
+# Binarni i generirani fileovi
+*.dll
+*.exe
+*.pdb
+*.dll.config
+*.exe.config
+*.log
+*.vsix
+*.nupkg
+*.p7s
+*.cache
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.docstates
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vscode/
+
+# Debugging
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+.vs/
+
+# Build and publish output
+[Dd]ebug*/
+[Rr]elease*/
+artifacts/
+
+# NuGet packages
+*.nupkg
+**/packages/
+!**/packages/build/
+
+# Node.js dependencies
+/node_modules/
+
+# TypeScript configuration
+tsconfig.json
+tslint.json
+
+# Visual Studio code files
+.vscode/
+*.sln.iml
+
+# Rider files
+.idea/
+
+# Mac OS Finder files
+.DS_Store

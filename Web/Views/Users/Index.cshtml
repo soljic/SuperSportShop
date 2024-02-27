@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Web.Models.UsersViewModel>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Lumen Example</title>
+    <!-- Bootstrap CSS -->
+    <!-- Ovdje dodajte referencu na jQuery -->
+  <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+  <script src="~/Scripts/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="pt-5">
+  <!-- Modal -->
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Create new User
+  </button>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>UserName</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+<!-- Modal -->
+<div class="modal" id="exampleModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+         <form id="addProductForm">
+            <div class="mb-3">
+                <label for="productName" class="form-label">Email</label>
+                <input type="text" class="form-control" id="userEmail">
+            </div>
+            <div class="mb-3">
+                <label for="productCategory" class="form-label">UserName</label>
+                <input type="text" class="form-control" id="userName">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="saveUser">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+    $(document).ready(function () {
+       
+        $('#exampleModal').on('show.bs.modal', function () {
+            
+            $('#saveUser').click(function () {
+                var userEmail = $('#userEmail').val();
+                var userName = $('#userName').val();
+
+                // Slanje podataka AJAX-om na server za spremanje u bazu
+                $.ajax({
+                    type: 'POST',
+                    url: '/users/Add',
+                    data: {
+                        Name: userName,
+                        Email: userEmail
+                    },
+                    success: function (response) {
+                        // Ažuriranje tablice s novim podacima
+                        var newRow = "<tr>" +
+                            "<td>" + response.Id + "</td>" +
+                            "<td>" + response.Name + "</td>" +
+                            "<td>" + response.Email + "</td>"
+                            "</tr>";
+                        $("table tbody").append(newRow);
+                        // Zatvaranje moda nakon što su podaci uspješno spremljeni
+                        $('#exampleModal').modal('hide');
+                    },
+                    error: function () {
+                        // Obrada grešaka ako se dogodi greška tijekom AJAX poziva
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+</body>
